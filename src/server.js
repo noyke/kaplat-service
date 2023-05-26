@@ -2,7 +2,7 @@ const express = require("express");
 
 const app = express();
 app.use(express.json()); // To parse the incoming requests with JSON payloads
-let counter = 0;
+let idCounter = 1;
 
 const STATUS = {
   PENDING: "PENDING",
@@ -39,7 +39,7 @@ app.post("/todo", (req, res) => {
   }
 
   const newTodo = {
-    id: counter,
+    id: idCounter,
     title: req.body.title,
     content: req.body.content,
     dueDate: new Date(req.body.dueDate),
@@ -47,7 +47,7 @@ app.post("/todo", (req, res) => {
   };
 
   todos.push(newTodo);
-  counter++;
+  idCounter++;
 
   return res.status(200).send({ result: newTodo.id });
 });
