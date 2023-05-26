@@ -47,9 +47,13 @@ const SORT = {
 
 const todos = [];
 
+// ### Health Check Endpoint ###
+
 app.get("/todo/health", (req, res) => {
   return res.status(200).send("OK");
 });
+
+// ### TODOs Endpoints ###
 
 app.post("/todo", (req, res) => {
   const isTodoExists = todos.some((todo) => todo.title === req.body.title);
@@ -203,6 +207,40 @@ app.delete("/todo", (req, res) => {
     return res.status(404).send({ errorMessage });
   }
 });
+
+// ### Logs Endpoints ###
+
+const loggers = {
+  "request-logger": requestLogger,
+  "todo-logger": todoLogger,
+};
+
+app.get("/logs/level", (req, res) => {
+  try {
+    const loggerName = req.query["logger-name"];
+
+    const level = loggers[loggerName].level.toUpperCase();
+
+    return res.send(`Success: ${level}`);
+  } catch (error) {
+    return res.send(`Failure: ${error.message}`);
+  }
+});
+
+app.put("/logs/level", (req, res) => {
+  try {
+    const loggerName = req.query["logger-name"];
+    const loggerLevel = req.query["logger-level"];
+
+    loggers[loggerName].level = loggerLevel.toLowerCase();
+
+    return res.send(`Success: ${loggerLevel.toUpperCase()}`);
+  } catch (error) {
+    return res.send(`Failure: ${error.message}`);
+  }
+});
+
+// ### Server ###
 
 const PORT = 9583;
 
