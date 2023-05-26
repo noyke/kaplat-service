@@ -1,8 +1,37 @@
 const express = require("express");
 
+const { requestLogger } = require("./logger");
+let { todoIdCounter, globalRequestCounter } = require("./globals");
+
 const app = express();
 app.use(express.json()); // To parse the incoming requests with JSON payloads
-let idCounter = 1;
+
+// "OnRequest" middleware
+app.use((req, res, next) => {
+  requestLogger.info(
+    `Incoming request | #${globalRequestCounter} | resource: ${req.url} | HTTP Verb ${req.method}`
+  );
+
+  next();
+});
+
+// "OnResponse" hook
+app.use((req, res, next) => {
+  const start = new Date();
+
+  res.on("finish", () => {
+    const end = new Date();
+    const duration = end - start;
+
+    requestLogger.debug(
+      `request #${globalRequestCounter} duration: ${duration}ms`
+    );
+
+    globalRequestCounter++;
+  });
+
+  next();
+});
 
 const STATUS = {
   PENDING: "PENDING",
@@ -39,7 +68,7 @@ app.post("/todo", (req, res) => {
   }
 
   const newTodo = {
-    id: idCounter,
+    id: todoIdCounter,
     title: req.body.title,
     content: req.body.content,
     dueDate: new Date(req.body.dueDate),
@@ -47,7 +76,7 @@ app.post("/todo", (req, res) => {
   };
 
   todos.push(newTodo);
-  idCounter++;
+  todoIdCounter++;
 
   return res.status(200).send({ result: newTodo.id });
 });
@@ -146,7 +175,7 @@ app.delete("/todo", (req, res) => {
   }
 });
 
-const PORT = 8496;
+const PORT = 9583;
 
 app.listen(PORT, () => {
   console.log(`Server is running on PORT: ${PORT}`);
