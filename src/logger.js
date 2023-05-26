@@ -5,7 +5,7 @@ const { globalRequestCounter } = require("./globals");
 const logggerBaseConfig = {
   level: "info",
   format: winston.format.combine(
-    winston.format.timestamp({ format: "DD-MM-YYYY HH:mm:ss.sss" }),
+    winston.format.timestamp({ format: "DD-MM-YYYY HH:mm:ss.SSS" }),
     winston.format.printf(({ timestamp, level, message }) => {
       return `${timestamp} ${level.toUpperCase()}: ${message} | request #${globalRequestCounter}`;
     })
