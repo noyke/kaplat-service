@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { requestLogger, todoLogger } = require("./logger");
+let { requestLogger, todoLogger } = require("./logger");
 let { todoIdCounter, globalRequestCounter } = require("./globals");
 
 const app = express();
