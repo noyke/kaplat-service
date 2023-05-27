@@ -242,7 +242,7 @@ app.put("/logs/level", (req, res) => {
 
 // ### Server ###
 
-const PORT = 9583;
+const PORT = 9285;
 
 app.listen(PORT, () => {
   console.log(`Server is running on PORT: ${PORT}`);
